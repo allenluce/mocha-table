@@ -2,14 +2,24 @@
   "name": "mocha-table",
   "version": "1.0.0",
   "description": "Table-driven tests for Mocha",
+  "main": "index.js",
+  "jsdelivr": "mocha-table.js",
   "scripts": {
-    "test": "mocha table-test.js"
+    "test": "mocha table-test.js",
+    "build": "browserify -r .:mocha-table > mocha-table.js"
   },
   "author": "Allen Luce <aluce@gitub.con.com>",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/allenluce/mocha-table/issues"
+  },
+  "homepage": "https://allenluce.github.io/mocha-table/",
   "dependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
     "sprintf-js": "^1.1.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.2",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   }
 }
