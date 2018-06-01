@@ -226,24 +226,22 @@ const vsprintf = require('sprintf-js').vsprintf
 module.exports.tabletests = function () {
   const title = arguments[0]
   const test = arguments[1]
-  for (let i = 2; i < arguments.length; i++) {
+  for (var i = 2; i < arguments.length; i++) {
     const entryArgs = arguments[i]
     const type = entryArgs.shift()
     const entryTitle = vsprintf(title, entryArgs)
-    let testFn
+    var testFn
     if (test.length === entryArgs.length) { // Sync function
-      console.log(`${entryTitle} is sync`)
       testFn = function () {
         return test.apply(this, entryArgs)
       }
-    } else if (test.length === entryArgs.length+1) { // Async function
-      console.log(`${entryTitle} is async`)
+    } else if (test.length === entryArgs.length + 1) { // Async function
       testFn = function (done) {
         entryArgs.push(done)
         return test.apply(this, entryArgs)
       }
     } else { // Error
-      
+      throw new Error('entry "' + entryTitle + '" has incorrect number of arguments')
     }
     switch (type) {
       case 0:
