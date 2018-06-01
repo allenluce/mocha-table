@@ -9,8 +9,20 @@ module.exports.tabletests = function () {
     const entryArgs = arguments[i]
     const type = entryArgs.shift()
     const entryTitle = vsprintf(title, entryArgs)
-    const testFn = function () {
-      test.apply(this, entryArgs)
+    let testFn
+    if (test.length === entryArgs.length) { // Sync function
+      console.log(`${entryTitle} is sync`)
+      testFn = function () {
+        return test.apply(this, entryArgs)
+      }
+    } else if (test.length === entryArgs.length+1) { // Async function
+      console.log(`${entryTitle} is async`)
+      testFn = function (done) {
+        entryArgs.push(done)
+        return test.apply(this, entryArgs)
+      }
+    } else { // Error
+      
     }
     switch (type) {
       case 0:

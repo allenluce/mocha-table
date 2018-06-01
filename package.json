@@ -5,7 +5,7 @@
   "main": "index.js",
   "jsdelivr": "mocha-table.js",
   "scripts": {
-    "test": "mocha table-test.js",
+    "test": "mocha test.js",
     "build": "browserify -r .:mocha-table > mocha-table.js"
   },
   "author": "Allen Luce <aluce@gitub.con.com>",
