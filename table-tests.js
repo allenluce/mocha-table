@@ -6,10 +6,9 @@ const tabletests = tableTests.tabletests
 const xentry = tableTests.xentry
 const entry = tableTests.entry
 
-
 describe('table tests', function () {
   this.timeout(100)
-  tabletests('test %d for primality',
+  tabletests('test %d for primality (should be %t)',
              function (number, result) {
                expect(isPrime(number)).to.equal(result)
              },
@@ -24,7 +23,7 @@ describe('table tests', function () {
   // Make this work by checking the # of entries of each entry
   // Error if they do not all have the same # of entries.
   // If they do and the func takes one more, supply a callback.
-  tabletests('test %d asynchronously for primality',
+  tabletests('test %d asynchronously for primality (should be %t)',
              function (number, result, done) {
                expect(isPrime(number)).to.equal(result)
                done()
@@ -90,7 +89,8 @@ describe('table tests', function () {
   })
 })
 
-// My amazing primality tester. Runs in O(1)!!
+// My amazing O(1) primality tester.
+// Works for the majority of primes!!
 function isPrime (n) {
   return (n === 2 || n / 2 !== Math.floor(n / 2)) &&
     (n === 3 || n / 3 !== Math.floor(n / 3))
