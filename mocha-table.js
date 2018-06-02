@@ -227,23 +227,24 @@ module.exports.tabletests = function () {
   const title = arguments[0]
   const test = arguments[1]
   for (var i = 2; i < arguments.length; i++) {
-    const entryArgs = arguments[i]
-    const type = entryArgs.shift()
-    const entryTitle = vsprintf(title, entryArgs)
-    var testFn
-    if (test.length === entryArgs.length) { // Sync function
-      testFn = function () {
-        return test.apply(this, entryArgs)
+    function loop(args) {
+      var entryArgs = (args.length === 1 ? [args[0]] : Array.apply(null, args))
+      var type = entryArgs.shift()
+      var entryTitle = vsprintf(title, entryArgs)
+      var testFn
+      if (test.length === entryArgs.length) { // Sync function
+        testFn = function () {
+          return test.apply(this, entryArgs)
+        }
+      } else if (test.length === entryArgs.length + 1) { // Async function
+        testFn = function (done) {
+          entryArgs.push(done)
+          return test.apply(this, entryArgs)
+        }
+      } else { // Error
+        throw new Error('entry "' + entryTitle + '" has incorrect number of arguments')
       }
-    } else if (test.length === entryArgs.length + 1) { // Async function
-      testFn = function (done) {
-        entryArgs.push(done)
-        return test.apply(this, entryArgs)
-      }
-    } else { // Error
-      throw new Error('entry "' + entryTitle + '" has incorrect number of arguments')
-    }
-    switch (type) {
+      switch (type) {
       case 0:
         it(entryTitle, testFn)
         break
@@ -253,7 +254,9 @@ module.exports.tabletests = function () {
       case 2:
         it.skip(entryTitle, testFn)
         break
+      }
     }
+    loop(arguments[i])
   }
 }
 

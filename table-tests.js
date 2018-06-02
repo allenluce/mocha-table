@@ -1,6 +1,11 @@
 /* global describe beforeEach */
-const {tabletests, xentry, entry} = require('.')
 const expect = require('chai').expect
+const tableTests = require('.')
+
+const tabletests = tableTests.tabletests
+const xentry = tableTests.xentry
+const entry = tableTests.entry
+
 
 describe('table tests', function () {
   this.timeout(100)
