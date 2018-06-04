@@ -13,13 +13,16 @@ and skipping of individual test entries.
 
 ## In Node.js
 
-The test names use https://github.com/alexei/sprintf.js for
-interpolation. The values that are given to each test are fed to
-sprintf.js for interpolation in the test title.
+[sprintf.js](https://github.com/alexei/sprintf.js) is used to
+interpolate a template, resulting in nice test names for each table
+entry.  The string template (the second argument to `describeTable`) is
+fed the values that are given to the test function (the third
+argument).
 
-    const {tabletests, entry} = require('mocha-table')
+    const {describeTable, entry} = require('mocha-table')
 
-    tabletests('test %d for primality (should be %t)',
+    describeTable('Primality tests',
+                  'is %d prime? (%t)',
       function (number, result) {
         expect(isPrime(number)).to.equal(result)
       },
@@ -29,6 +32,8 @@ sprintf.js for interpolation in the test title.
       entry(1847, true),
       entry(1848, false)
     )
+
+![You'll get nice results](assets/results.png)
 
 ## In the browser
 
@@ -42,11 +47,11 @@ Here's a simple HTML test harness:
     </head>
     <body>
     <div id="mocha"></div>
-    
+
     <script src="https://unpkg.com/chai@4.1.2/chai.js"></script>
     <script src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mocha-table@1.0.2"></script>
-    
+
     <script>mocha.setup('bdd')</script>
     <script src="prime.js"></script>
     <script src="prime.test.js"></script>
@@ -68,14 +73,15 @@ Given a `prime.js` like this:
 
 A table-driven test `prime.test.js` file looks like:
 
-    const tableTests = require('mocha-table')
-    const tabletests = tableTests.tabletests
-    const xentry = tableTests.xentry
-    const entry = tableTests.entry
-    
+    const mochaTable = require('mocha-table')
+    const describeTable = mochaTable.describeTable
+    const xentry = mochaTable.xentry
+    const entry = mochaTable.entry
+
     const expect = chai.expect
     describe('prime tester', function () {
-      tabletests('test %d for primality',
+      describeTable('Primality tests',
+                    'is %d prime? (%t)',
                  function (number, result) {
                    expect(isPrime(number)).to.equal(result)
                  },
@@ -95,3 +101,12 @@ programmatically using `.only` to mark it:
     ...
     entry.only(3, true),
     ...
+
+## Building from source
+
+Mocha Table uses [Browserify](http://browserify.org/) to create a
+version that's easily usable on the web (via
+[jsDelivr](jsdelivr.com)). Make sure any changes to `index.js` are
+reflected in the built asset:
+
+npm run build

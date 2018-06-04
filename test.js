@@ -20,28 +20,28 @@ describe('table tests', function () {
     mocha.run(function () {
       expect(stats).to.eql({
         pass: [
-          'test 3 for primality',
-          'test 4 for primality',
-          'test 1847 for primality',
-          'test 1848 for primality',
-          'test 3 asynchronously for primality',
-          'test 4 asynchronously for primality',
-          'test 1847 asynchronously for primality',
-          'test 1848 asynchronously for primality',
+          'is 3 prime? (should be true)',
+          'is 4 prime? (should be false)',
+          'is 1847 prime? (should be true)',
+          'is 1848 prime? (should be false)',
+          'is 3 (asynchronously) prime? (should be true)',
+          'is 4 (asynchronously) prime? (should be false)',
+          'is 1847 (asynchronously) prime? (should be true)',
+          'is 1848 (asynchronously) prime? (should be false)',
           'this object should be the right one',
           'this object should be the right one in async',
           'make sure the promise is accepted'
         ],
         fail: [
-          'timeouts should continue to work',
+          'should continue to time out',
           'make sure the promise is rejected',
           'make sure the promise is timed out'
         ],
         pending: [
-          'test 15 for primality',
-          'test 21 for primality',
-          'test 15 asynchronously for primality',
-          'test 21 asynchronously for primality'
+          'is 15 prime? (should be false)',
+          'is 21 prime? (should be false)',
+          'is 15 (asynchronously) prime? (should be false)',
+          'is 21 (asynchronously) prime? (should be false)'
         ]
       })
       done()
