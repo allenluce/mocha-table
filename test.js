@@ -33,6 +33,8 @@ describe('table tests', function () {
           'make sure the promise is accepted'
         ],
         fail: [
+          'is 685242563 prime? (should be false)',
+          'is 685242563 (asynchronously) prime? (should be false)',
           'should continue to time out',
           'make sure the promise is rejected',
           'make sure the promise is timed out'

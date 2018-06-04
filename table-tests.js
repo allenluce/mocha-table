@@ -16,7 +16,8 @@ describeTable('Primality tests',
               entry.skip(15, false),
               xentry(21, false),
               entry(1847, true),
-              entry(1848, false)
+              entry(1848, false),
+              entry(685242563, false) // This fails on purpose
              )
 
 // Make this work by checking the # of entries of each entry
@@ -33,7 +34,8 @@ describeTable('Asynchronous primality tests',
               entry.skip(15, false),
               xentry(21, false),
               entry(1847, true),
-              entry(1848, false)
+              entry(1848, false),
+              entry(685242563, false) // This fails on purpose
              )
 
 describeTable('Timeouts',

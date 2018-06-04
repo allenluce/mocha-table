@@ -2,58 +2,47 @@
 
 const vsprintf = require('sprintf-js').vsprintf
 
-function doEntry (args, subtitle, test) {
-  var entryArgs = (args.length === 1 ? [args[0]] : Array.apply(null, args))
-  var itType = entryArgs.shift()
+// Build the test entry. Takes an it function, arguments from the
+// entry, the title to interpolate, and the table test function
+// itself.
+function doEntry (itType, entryArgs, subtitle, test) {
+  // Convert to regular array for manipulation.
+  entryArgs = (entryArgs.length === 1 ? [entryArgs[0]] : Array.apply(null, entryArgs))
   var entryTitle = vsprintf(subtitle, entryArgs)
-  if (test.length === entryArgs.length) { // Sync function
-    itType(entryTitle, function () {
-      return test.apply(this, entryArgs)
+  if (entryArgs.length > test.length) {
+    throw new Error('entry "' + entryTitle + '" has too many arguments')
+  }
+  var testFunction = function () {
+    entryArgs.push.apply(entryArgs, arguments) // Hand any callback to the test function
+    return test.apply(this, entryArgs)
+  }
+  // If the test function takes more args than entries define,
+  // assume it's async and takes a callback
+  Object.defineProperty(testFunction, 'length', { value: entryArgs.length - test.length })
+  itType(entryTitle, testFunction)
+}
+
+// Main describeTable function, takes a describe function to run
+function describeType (descType) {
+  return function (title, subtitle, test) {
+    var entries = arguments
+    descType(title, function () {
+      for (var i = 3; i < entries.length; i++) {
+        doEntry(entries[i][0], entries[i][1], subtitle, test)
+      }
     })
-  } else if (test.length === entryArgs.length + 1) { // Async function
-    itType(entryTitle, function (done) {
-      entryArgs.push(done)
-      return test.apply(this, entryArgs)
-    })
-  } else { // Error
-    throw new Error('entry "' + entryTitle + '" has incorrect number of arguments')
   }
 }
 
-function runLoop (masterArgs) {
-  var subtitle = masterArgs[1]
-  var test = masterArgs[2]
-  for (var i = 3; i < masterArgs.length; i++) {
-    doEntry(masterArgs[i], subtitle, test)
-  }
-}
+module.exports.describeTable = describeType(describe)
+module.exports.describeTable.only = describeType(describe.only)
+module.exports.describeTable.xdescribeTable = module.exports.describeTable.skip = describeType(describe.skip)
 
-module.exports.describeTable = function () {
-  var args = arguments
-  return describe(args[0], function () {
-    runLoop(args)
-  })
-}
-
-module.exports.describeTable.only = function () {
-  var args = arguments
-  return describe.only(args[0], function () {
-    runLoop(args)
-  })
-}
-
-module.exports.describeTable.xdescribeTable = module.exports.describeTable.skip = function () {
-  var args = arguments
-  return describe.skip(args[0], function () {
-    runLoop(args)
-  })
-}
-
+// Each entry ends up as an array of its args appended to the function
+// that it should execute for its test (it, it.only, or it.skip)
 function entryType (itType) {
   return function () {
-    var args = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments))
-    args.unshift(itType)
-    return args
+    return [itType, arguments]
   }
 }
 
