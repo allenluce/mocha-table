@@ -19,18 +19,20 @@ entry.  The string template (the second argument to `describeTable`) is
 fed the values that are given to the test function (the third
 argument).
 
-    const {tableTest, tableEntry} = require('mocha-table')
+    const expect = require('chai').expect
+    const {describeTable, tableIt, entryIt, xentryIt} = require('.')
 
-    describe('Primality tests', function() {
-      tableIt('finds %d prime? (%t)', function (number, result) {
+    describeTable('Primality tests', function() {
+      tableIt('is %d prime? (should be %t)', function (number, result) {
         expect(isPrime(number)).to.equal(result)
       })
 
-      tableEntry(2, true),
-      tableEntry(3, true),
-      tableEntry(4, false),
-      tableEntry(1847, true),
-      tableEntry(1848, false)
+      entryIt(3, true)
+      entryIt(4, false)
+      entryIt.skip(15, false)
+      xentryIt(21, false)
+      entryIt(1847, true)
+      entryIt(1848, false)
     })
 
 ![You'll get nice results](assets/results.png)
@@ -50,7 +52,7 @@ Here's a simple HTML test harness:
 
     <script src="https://unpkg.com/chai@4.1.2/chai.js"></script>
     <script src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mocha-table@1.0.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mocha-table@1.0.5"></script>
 
     <script>mocha.setup('bdd')</script>
     <script src="prime.js"></script>
@@ -75,31 +77,32 @@ A table-driven test `prime.test.js` file looks like:
 
     const mochaTable = require('mocha-table')
     const describeTable = mochaTable.describeTable
-    const xentry = mochaTable.xentry
-    const entry = mochaTable.entry
-
+    const tableIt = mochaTable.tableIt
+    const entryIt = mochaTable.entryIt
+    const xentryIt = mochaTable.xentryIt
     const expect = chai.expect
-    describe('prime tester', function () {
-      describeTable('Primality tests',
-                    'is %d prime? (%t)',
-                 function (number, result) {
-                   expect(isPrime(number)).to.equal(result)
-                 },
-                 entry(3, true),
-                 entry(4, false),
-                 entry.skip(15, false),
-                 xentry(21, false),
-                 entry(1847, true),
-                 entry(1848, false)
-                )
+
+    describeTable('Primality tests', function() {
+      tableIt('is %d prime? (should be %t)', function (number, result) {
+        expect(isPrime(number)).to.equal(result)
+      })
+
+      entryIt(3, true)
+      entryIt(4, false)
+      entryIt.skip(15, false)
+      xentryIt(21, false)
+      entryIt(1847, true)
+      entryIt(1848, false)
     })
 
-This snippet demonstrates the use of `xentry` and `entry.skip` to mark
-some pesky tests that haven't been fixed yet. An entry can be focused
-programmatically using `.only` to mark it:
+![You'll get nice web results](assets/web.png)
+
+The example above demonstrates the use of `xentryIt` and `entryIt.skip` to
+mark some pesky tests that haven't been fixed yet. An entry can also be
+focused programmatically using `.only` to mark it:
 
     ...
-    entry.only(3, true),
+    entryIt.only(3, true),
     ...
 
 ## Building from source
@@ -109,4 +112,4 @@ version that's easily usable on the web (via
 [jsDelivr](jsdelivr.com)). Make sure any changes to `index.js` are
 reflected in the built asset:
 
-npm run build
+    npm run build
