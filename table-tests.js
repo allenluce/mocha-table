@@ -1,4 +1,4 @@
-/* global describe beforeEach */
+/* global describe beforeEach before */
 const expect = require('chai').expect
 const mochaTable = require('.')
 
@@ -71,6 +71,27 @@ describe('Handling this', function () {
       done()
     })
     entryIt()
+  })
+})
+
+describe('Proper before usage', function () {
+  describeTable('first before works', function () {
+    before(function () {
+      this.me = 'first'
+    })
+    tableIt('should end up with %s', function (item) {
+      expect(this.me).to.equal(item)
+    })
+    entryIt('first')
+  })
+  describeTable('second before works', function () {
+    before(function () {
+      this.me = 'second'
+    })
+    tableIt('should also end up with %s', function (item) {
+      expect(this.me).to.equal(item)
+    })
+    entryIt('second')
   })
 })
 

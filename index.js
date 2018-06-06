@@ -27,10 +27,10 @@ function doEntry (itType, entryArgs, subtitle, test) {
 
 function describeTableType (descFunc) {
   return function (title, functions) {
-    // Fill the arrays with tables and entries.
-    functions()
     // Wrap in a describe
     descFunc(title, function () {
+      // Fill the arrays with tables and entries.
+      functions()
       var tablesLen = tables.length
       var entriesLen = entries.length
       for (var i = 0; i < tablesLen; i++) { // For every table

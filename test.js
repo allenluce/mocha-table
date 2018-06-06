@@ -39,6 +39,8 @@ describe('table tests', function () {
           'is 1848 (asynchronously) prime? (should be false)',
           'this object should be the right one',
           'this object should be the right one in async',
+          'should end up with first',
+          'should also end up with second',
           'make sure the promise is accepted'
         ],
         fail: [
