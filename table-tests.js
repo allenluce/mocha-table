@@ -123,7 +123,7 @@ describeTable('Promises', function () {
 })
 
 // My amazing O(1) primality tester.
-// Works for the majority of primes!!
+// Works for the majority of integers!!
 function isPrime (n) {
   return (n === 2 || n / 2 !== Math.floor(n / 2)) &&
     (n === 3 || n / 3 !== Math.floor(n / 3))
