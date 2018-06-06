@@ -3,97 +3,103 @@ const expect = require('chai').expect
 const mochaTable = require('.')
 
 const describeTable = mochaTable.describeTable
-const xentry = mochaTable.xentry
-const entry = mochaTable.entry
+const tableIt = mochaTable.tableIt
+const entryIt = mochaTable.entryIt
+const xentryIt = mochaTable.xentryIt
 
-describeTable('Primality tests',
-              'is %d prime? (should be %t)',
-              function (number, result) {
-                expect(isPrime(number)).to.equal(result)
-              },
-              entry(3, true),
-              entry(4, false),
-              entry.skip(15, false),
-              xentry(21, false),
-              entry(1847, true),
-              entry(1848, false),
-              entry(685242563, false) // This fails on purpose
-             )
+describeTable('Primality tests', function () {
+  tableIt('is %d prime? (should be %t)', function (number, result) {
+    expect(isPrime(number)).to.equal(result)
+  })
+  entryIt(3, true)
+  entryIt(4, false)
+  entryIt.skip(15, false)
+  xentryIt(21, false)
+  entryIt(1847, true)
+  entryIt(1848, false)
+  entryIt(685242563, false) // This fails on purpose
+})
 
-// Make this work by checking the # of entries of each entry
-// Error if they do not all have the same # of entries.
-// If they do and the func takes one more, supply a callback.
-describeTable('Asynchronous primality tests',
-              'is %d (asynchronously) prime? (should be %t)',
-              function (number, result, done) {
-                expect(isPrime(number)).to.equal(result)
-                done()
-              },
-              entry(3, true),
-              entry(4, false),
-              entry.skip(15, false),
-              xentry(21, false),
-              entry(1847, true),
-              entry(1848, false),
-              entry(685242563, false) // This fails on purpose
-             )
+describeTable('Multitable tests', function () {
+  tableIt('testing 1 %d', function (number) {})
+  entryIt(10)
+  tableIt('testing 2 %d', function (number) {})
+  entryIt(20)
+})
 
-describeTable('Timeouts',
-              'should continue to time out',
-              function (done) {
-                this.timeout(100)
-              },
-              entry()
-             )
+describeTable('Skip tests', function () {
+  tableIt.skip('testing 3 %d', function (number) {})
+  entryIt(30)
+  tableIt('testing 4 %d', function (number) {})
+  entryIt(40)
+})
+
+describeTable('Asynchronous primality tests', function () {
+  tableIt('is %d (asynchronously) prime? (should be %t)', function (number, result, done) {
+    expect(isPrime(number)).to.equal(result)
+    done()
+  })
+  entryIt(3, true)
+  entryIt(4, false)
+  entryIt.skip(15, false)
+  xentryIt(21, false)
+  entryIt(1847, true)
+  entryIt(1848, false)
+  entryIt(685242563, false) // This fails on purpose
+})
+
+describeTable('Timeouts', function () {
+  tableIt('should continue to time out', function (done) {
+    this.timeout(100)
+  })
+  entryIt()
+})
 
 describe('Handling this', function () {
   beforeEach(function () {
     this.me = 'right one'
   })
-  describeTable('This handling',
-                'this object should be the right one',
-                function () {
-                  expect(this.me).to.equal('right one')
-                },
-                entry()
-               )
-  describeTable('This handling',
-                'this object should be the right one in async',
-                function (done) {
-                  expect(this.me).to.equal('right one')
-                  done()
-                },
-                entry()
-               )
+  describeTable('This handling', function () {
+    tableIt('this object should be the right one', function () {
+      expect(this.me).to.equal('right one')
+    })
+    entryIt()
+  })
+  describeTable('This handling', function () {
+    tableIt('this object should be the right one in async', function (done) {
+      expect(this.me).to.equal('right one')
+      done()
+    })
+    entryIt()
+  })
 })
 
-describeTable('Promises',
-              'make sure the promise is %s',
-              function (which) {
-                switch (which) {
-                  case 'accepted':
-                    return {
-                      then: function (success, reject) {
-                        success()
-                      }
-                    }
-                  case 'rejected':
-                    return {
-                      then: function (success, reject) {
-                        reject()
-                      }
-                    }
-                  case 'timed out':
-                    this.timeout(100)
-                    return {
-                      then: function (success, reject) {}
-                    }
-                }
-              },
-              entry('accepted'),
-              entry('rejected'),
-              entry('timed out')
-             )
+describeTable('Promises', function () {
+  tableIt('make sure the promise is %s', function (which) {
+    switch (which) {
+      case 'accepted':
+        return {
+          then: function (success, reject) {
+            success()
+          }
+        }
+      case 'rejected':
+        return {
+          then: function (success, reject) {
+            reject()
+          }
+        }
+      case 'timed out':
+        this.timeout(100)
+        return {
+          then: function (success, reject) {}
+        }
+    }
+  })
+  entryIt('accepted')
+  entryIt('rejected')
+  entryIt('timed out')
+})
 
 // My amazing O(1) primality tester.
 // Works for the majority of primes!!

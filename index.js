@@ -2,6 +2,9 @@
 
 const vsprintf = require('sprintf-js').vsprintf
 
+var tables = []
+var entries = []
+
 // Build the test entry. Takes an it function, arguments from the
 // entry, the title to interpolate, and the table test function
 // itself.
@@ -22,30 +25,50 @@ function doEntry (itType, entryArgs, subtitle, test) {
   itType(entryTitle, testFunction)
 }
 
-// Main describeTable function, takes a describe function to run
-function describeType (descType) {
-  return function (title, subtitle, test) {
-    var entries = arguments
-    descType(title, function () {
-      for (var i = 3; i < entries.length; i++) {
-        doEntry(entries[i][0], entries[i][1], subtitle, test)
+function describeTableType (descFunc) {
+  return function (title, functions) {
+    // Fill the arrays with tables and entries.
+    functions()
+    // Wrap in a describe
+    descFunc(title, function () {
+      var tablesLen = tables.length
+      var entriesLen = entries.length
+      for (var i = 0; i < tablesLen; i++) { // For every table
+        for (var j = 0; j < entriesLen; j++) { // do each entry.
+          // If the entry is not an `it`, use that. Otherwise use the table runtype.
+          var itFunc = (entries[j][0] === it) ? tables[i][0] : entries[j][0]
+          doEntry(itFunc, entries[j][1], tables[i][1], tables[i][2])
+        }
       }
+      // Reset table and entries.
+      tables = []
+      entries = []
     })
   }
 }
 
-module.exports.describeTable = describeType(describe)
-module.exports.describeTable.only = describeType(describe.only)
-module.exports.describeTable.xdescribeTable = module.exports.describeTable.skip = describeType(describe.skip)
+module.exports.describeTable = describeTableType(describe)
+module.exports.describeTable.only = describeTableType(describe.only)
+module.exports.xdescribeTable = module.exports.describeTable.skip = describeTableType(describe.skip)
 
-// Each entry ends up as an array of its args appended to the function
-// that it should execute for its test (it, it.only, or it.skip)
-function entryType (itType) {
-  return function () {
-    return [itType, arguments]
+function tableType (itFunc) {
+  return function (title, test) {
+    tables.push([itFunc, title, test])
   }
 }
 
-module.exports.entry = entryType(it)
-module.exports.entry.only = entryType(it.only)
-module.exports.xentry = module.exports.entry.skip = entryType(it.skip)
+module.exports.tableIt = tableType(it)
+module.exports.tableIt.only = tableType(it.only)
+module.exports.xtableIt = module.exports.tableIt.skip = tableType(it.skip)
+
+// Each entry ends up as an array of its args appended to the function
+// that it should execute for its test (it, it.only, or it.skip)
+function entryType (itFunc) {
+  return function () {
+    entries.push([itFunc, arguments])
+  }
+}
+
+module.exports.entryIt = entryType(it)
+module.exports.entryIt.only = entryType(it.only)
+module.exports.xentryIt = module.exports.entryIt.skip = entryType(it.skip)

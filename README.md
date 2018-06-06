@@ -19,19 +19,19 @@ entry.  The string template (the second argument to `describeTable`) is
 fed the values that are given to the test function (the third
 argument).
 
-    const {describeTable, entry} = require('mocha-table')
+    const {tableTest, tableEntry} = require('mocha-table')
 
-    describeTable('Primality tests',
-                  'is %d prime? (%t)',
-      function (number, result) {
+    describe('Primality tests', function() {
+      tableIt('finds %d prime? (%t)', function (number, result) {
         expect(isPrime(number)).to.equal(result)
-      },
-      entry(2, true),
-      entry(3, true),
-      entry(4, false),
-      entry(1847, true),
-      entry(1848, false)
-    )
+      })
+
+      tableEntry(2, true),
+      tableEntry(3, true),
+      tableEntry(4, false),
+      tableEntry(1847, true),
+      tableEntry(1848, false)
+    })
 
 ![You'll get nice results](assets/results.png)
 
