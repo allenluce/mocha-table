@@ -13,6 +13,10 @@ and skipping of individual test entries.
 
 ## In Node.js
 
+### Installation
+
+    npm install mocha-table --save-dev
+
 [sprintf.js](https://github.com/alexei/sprintf.js) is used to
 interpolate a template, resulting in nice test names for each table
 entry.  The string template (the second argument to `describeTable`) is
@@ -20,7 +24,7 @@ fed the values that are given to the test function (the third
 argument).
 
     const expect = require('chai').expect
-    const {describeTable, tableIt, entryIt, xentryIt} = require('.')
+    const {describeTable, tableIt, entryIt, xentryIt} = require('mocha-table')
 
     describeTable('Primality tests', function() {
       tableIt('is %d prime? (should be %t)', function (number, result) {
