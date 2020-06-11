@@ -117,3 +117,7 @@ version that's easily usable on the web (via
 reflected in the built asset:
 
     npm run build
+
+## Mocha version
+
+Mocha Table works with  Mocha version 4.0.0 or higher.
