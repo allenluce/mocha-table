@@ -39,7 +39,7 @@ argument).
       entryIt(1848, false)
     })
 
-![You'll get nice results](assets/results.png)
+![You'll get nice results](https://github.com/allenluce/mocha-table/raw/master/assets/web.png)
 
 ## In the browser
 

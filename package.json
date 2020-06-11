@@ -1,6 +1,6 @@
 {
   "name": "mocha-table",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Table-driven tests for Mocha",
   "main": "index.js",
   "jsdelivr": "mocha-table.js",
